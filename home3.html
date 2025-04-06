@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تطبيق سفاري</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #171D30;
+            color: white;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .light-effect {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(23, 150, 200, 0.4) 0%, rgba(23, 29, 48, 0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+            transition: transform 0.1s ease-out;
+        }
+        
+        .container {
+            position: relative;
+            z-index: 1;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            padding: 8px 15px;
+            width: 60%;
+            max-width: 500px;
+            backdrop-filter: blur(5px);
+        }
+        
+        .search-bar input {
+            background: transparent;
+            border: none;
+            color: white;
+            width: 100%;
+            padding: 5px 10px;
+            outline: none;
+            font-size: 16px;
+        }
+        
+        .search-bar i {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .user-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .user-actions i {
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.8);
+            cursor: pointer;
+        }
+        
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, #4CAF50, #2196F3);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 30px;
+            max-width: 600px;
+        }
+        
+        .cta-button {
+            background: linear-gradient(45deg, #4CAF50, #2196F3);
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
+        }
+        
+        .floating-icons {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .floating-icon {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.1);
+            font-size: 24px;
+            animation: float 15s infinite linear;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-50px) rotate(180deg);
+            }
+            100% {
+                transform: translateY(0) rotate(360deg);
+            }
+        }
+        
+        footer {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            padding: 15px 0;
+        }
+        
+        .footer-icon {
+            font-size: 24px;
+            color: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .footer-icon.active {
+            color: #4CAF50;
+        }
+        
+        .footer-icon:hover {
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="light-effect" id="lightEffect"></div>
+    
+    <div class="floating-icons" id="floatingIcons"></div>
+    
+    <div class="container">
+        <header>
+            <div class="logo">سفاري</div>
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="ابحث عن أي شيء...">
+            </div>
+            <div class="user-actions">
+                <i class="fas fa-bookmark"></i>
+                <i class="fas fa-cog"></i>
+                <i class="fas fa-user"></i>
+            </div>
+        </header>
+        
+        <div class="main-content">
+            <h1>اكتشف العالم مع سفاري</h1>
+            <p>استكشف الأماكن الجميلة، اكتشف الثقافات المتنوعة، وخطط لرحلاتك القادمة مع تطبيق سفاري المتكامل.</p>
+            <button class="cta-button">ابدأ الرحلة</button>
+        </div>
+        
+        <footer>
+            <i class="fas fa-home footer-icon active"></i>
+            <i class="fas fa-compass footer-icon"></i>
+            <i class="fas fa-map-marked-alt footer-icon"></i>
+            <i class="fas fa-heart footer-icon"></i>
+        </footer>
+    </div>
+    
+    <script>
+        // تأثير الضوء الذي يتبع الماوس
+        document.addEventListener('mousemove', (e) => {
+            const lightEffect = document.getElementById('lightEffect');
+            lightEffect.style.left = `${e.clientX}px`;
+            lightEffect.style.top = `${e.clientY}px`;
+        });
+        
+        // إنشاء أيقونات عائمة
+        const floatingIcons = document.getElementById('floatingIcons');
+        const icons = ['fa-leaf', 'fa-mountain', 'fa-umbrella-beach', 'fa-tree', 'fa-water', 'fa-cloud'];
+        
+        for (let i = 0; i < 20; i++) {
+            const icon = document.createElement('i');
+            icon.className = `fas ${icons[Math.floor(Math.random() * icons.length)]} floating-icon`;
+            
+            // وضع عشوائي
+            icon.style.left = `${Math.random() * 100}%`;
+            icon.style.top = `${Math.random() * 100}%`;
+            
+            // حجم عشوائي
+            const size = Math.random() * 20 + 10;
+            icon.style.fontSize = `${size}px`;
+            
+            // تأخير عشوائي للأنيميشن
+            icon.style.animationDelay = `${Math.random() * 10}s`;
+            icon.style.animationDuration = `${Math.random() * 10 + 10}s`;
+            
+            floatingIcons.appendChild(icon);
+        }
+        
+        // تغيير الأيقونة النشطة في الفوتر
+        const footerIcons = document.querySelectorAll('.footer-icon');
+        footerIcons.forEach(icon => {
+            icon.addEventListener('click', () => {
+                footerIcons.forEach(i => i.classList.remove('active'));
+                icon.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
