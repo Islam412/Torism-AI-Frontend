@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>اختر صورة رمزية</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700&display=swap');
+    
+    :root {
+      --primary: #4CAF50;
+      --primary-dark: #2E8B57;
+      --accent: #FFD700;
+      --bg: #121826;
+      --bg-light: #1a2038;
+      --text: #ffffff;
+    }
+    
+    * {
+      font-family: 'Tajawal', sans-serif;
+    }
+    
+    body {
+      background-color: var(--bg);
+      min-height: 100vh;
+      overflow-x: hidden;
+      color: var(--text);
+      position: relative;
+    }
+    
+    /* Cosmic Background */
+    .cosmic-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -3;
+      background: 
+        radial-gradient(circle at 20% 30%, rgba(76, 175, 80, 0.15) 0%, transparent 25%),
+        radial-gradient(circle at 80% 70%, rgba(255, 215, 0, 0.1) 0%, transparent 25%),
+        linear-gradient(135deg, var(--bg) 0%, var(--bg-light) 100%);
+    }
+    
+    /* Animated Stars */
+    .stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      overflow: hidden;
+    }
+    
+    .star {
+      position: absolute;
+      background-color: white;
+      border-radius: 50%;
+      animation: twinkle var(--duration) infinite ease-in-out;
+      opacity: var(--opacity);
+    }
+    
+    @keyframes twinkle {
+      0%, 100% { opacity: var(--opacity); }
+      50% { opacity: calc(var(--opacity) * 0.3); }
+    }
+    
+    /* Mouse Light Effect */
+    .cursor-light {
+      position: fixed;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0) 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      filter: blur(30px);
+    }
+    
+    body.light-effect .cursor-light {
+      opacity: 0.3;
+    }
+    
+    /* Custom Cursor */
+    .cursor {
+      position: fixed;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background-color: rgba(255, 230, 0, 0.7);
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      z-index: 9999;
+      mix-blend-mode: screen;
+      transition: transform 0.2s ease, background-color 0.2s ease;
+    }
+    
+    /* Content Container */
+    .content-wrapper {
+      position: relative;
+      z-index: 1;
+      background-color: rgba(30, 41, 59, 0.85);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+      transform: translateY(30px);
+      opacity: 0;
+      animation: fadeInUp 1s ease forwards 0.3s;
+    }
+    
+    @keyframes fadeInUp {
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    
+    /* Avatar Images */
+    .avatar-img {
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .avatar-img:hover {
+      transform: scale(1.1);
+      border-color: var(--accent);
+      box-shadow: 0 0 15px var(--accent);
+    }
+    
+    .avatar-img.selected {
+      border-color: var(--primary);
+      box-shadow: 0 0 20px var(--primary);
+      transform: scale(1.05);
+    }
+    
+    /* Next Button */
+    .next-btn {
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      box-shadow: 0 5px 20px rgba(76, 175, 80, 0.3);
+    }
+    
+    .next-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+    }
+    
+    .next-btn::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: 0.6s ease;
+    }
+    
+    .next-btn:hover::after {
+      left: 100%;
+    }
+    
+    /* Floating particles */
+    .particle {
+      position: absolute;
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: -1;
+      animation: float 15s linear infinite;
+    }
+    
+    @keyframes float {
+      0% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-100px) rotate(180deg); }
+      100% { transform: translateY(0px) rotate(360deg); }
+    }
+    
+    /* Ripple effect */
+    .ripple {
+      position: absolute;
+      background: rgba(255,255,255,0.4);
+      border-radius: 50%;
+      transform: scale(0);
+      animation: ripple 0.6s linear;
+      pointer-events: none;
+    }
+    
+    @keyframes ripple {
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+  <!-- Cosmic Background Elements -->
+  <div class="cosmic-bg"></div>
+  <div class="stars" id="stars"></div>
+  <div class="cursor-light" id="cursorLight"></div>
+  <div class="cursor"></div>
+  
+  <!-- Main Content -->
+  <div class="content-wrapper p-8 max-w-md w-full">
+    <h1 class="text-center text-3xl mb-8 font-bold text-yellow-300">
+      اختر صورة رمزية
+    </h1>
+    
+    <div class="grid grid-cols-2 gap-6 mb-8">
+      <div class="flex justify-center">
+        <img alt="فرعون مبتسم" class="avatar-img rounded-full w-24 h-24 cursor-pointer" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrm6thFsIie-E7ldCr50EdTNjUR9OZ7YQXWQXvFJfjij1dyh-wX_WNE8oTW6SnLcLqj88&usqp=CAU"/>
+      </div>
+      <div class="flex justify-center">
+        <img alt="فرعون مبتسم" class="avatar-img rounded-full w-24 h-24 cursor-pointer" src="https://storage.googleapis.com/a1aa/image/MhM1D6E-ZyrjmaYffgHVYtXGSyr462YhZv4IriFgIQQ.jpg"/>
+      </div>
+      <div class="flex justify-center">
+        <img alt="فرعون مبتسم" class="avatar-img rounded-full w-24 h-24 cursor-pointer" src="https://static.vecteezy.com/ti/gratis-vektor/p1/5112786-cartoon-kleines-madchen-tragen-agyptische-cleopatra-kostum-kostenlos-vektor.jpg"/>
+      </div>
+      <div class="flex justify-center">
+        <img alt="فرعون مبتسم" class="avatar-img rounded-full w-24 h-24 cursor-pointer" src="https://static.vecteezy.com/system/resources/previews/004/903/186/non_2x/cartoon-character-of-queen-cleopatra-egyptian-girl-in-ancient-clothes-vector.jpg"/>
+      </div>
+    </div>
+    
+    <div class="flex justify-center">
+      <button class="next-btn text-white py-3 px-8 rounded-full text-lg font-medium">
+        التالي
+      </button>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Create stars
+      const starsContainer = document.getElementById('stars');
+      for (let i = 0; i < 100; i++) {
+        const star = document.createElement('div');
+        star.classList.add('star');
+        star.style.width = `${Math.random() * 3 + 1}px`;
+        star.style.height = star.style.width;
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.top = `${Math.random() * 100}%`;
+        star.style.setProperty('--duration', `${Math.random() * 5 + 3}s`);
+        star.style.setProperty('--opacity', Math.random() * 0.5 + 0.1);
+        starsContainer.appendChild(star);
+      }
+      
+      // Mouse Light Effect
+      const cursorLight = document.getElementById('cursorLight');
+      const cursor = document.querySelector('.cursor');
+      const avatars = document.querySelectorAll('.avatar-img');
+      const nextBtn = document.querySelector('.next-btn');
+      
+      // Mouse move effects
+      document.addEventListener('mousemove', (e) => {
+        cursor.style.left = e.clientX + 'px';
+        cursor.style.top = e.clientY + 'px';
+        cursorLight.style.left = e.clientX + 'px';
+        cursorLight.style.top = e.clientY + 'px';
+        document.body.classList.add('light-effect');
+      });
+      
+      document.addEventListener('mouseout', () => {
+        document.body.classList.remove('light-effect');
+      });
+      
+      // Avatar hover effects
+      avatars.forEach(avatar => {
+        avatar.addEventListener('mouseenter', () => {
+          cursor.style.transform = 'translate(-50%, -50%) scale(2)';
+          cursor.style.backgroundColor = 'rgba(245, 158, 11, 0.7)';
+        });
+        
+        avatar.addEventListener('mouseleave', () => {
+          cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+          cursor.style.backgroundColor = 'rgba(255, 230, 0, 0.7)';
+        });
+        
+        // Click effect
+        avatar.addEventListener('click', () => {
+          // Remove selected class from all avatars
+          avatars.forEach(a => a.classList.remove('selected'));
+          // Add selected class to clicked avatar
+          avatar.classList.add('selected');
+        });
+      });
+      
+      // Button hover effect
+      nextBtn.addEventListener('mouseenter', () => {
+        cursor.style.transform = 'translate(-50%, -50%) scale(1.5)';
+        cursor.style.backgroundColor = 'rgba(76, 175, 80, 0.7)';
+      });
+      
+      nextBtn.addEventListener('mouseleave', () => {
+        cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+        cursor.style.backgroundColor = 'rgba(255, 230, 0, 0.7)';
+      });
+      
+      // Button click with ripple effect
+      nextBtn.addEventListener('click', function(e) {
+        const selectedAvatar = document.querySelector('.avatar-img.selected');
+        if (!selectedAvatar) {
+          alert('الرجاء اختيار صورة رمزية أولاً');
+          return;
+        }
+        
+        // Create ripple effect
+        const ripple = document.createElement('span');
+        ripple.classList.add('ripple');
+        const rect = e.target.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        ripple.style.width = ripple.style.height = `${size}px`;
+        ripple.style.left = `${e.clientX - rect.left - size/2}px`;
+        ripple.style.top = `${e.clientY - rect.top - size/2}px`;
+        nextBtn.appendChild(ripple);
+        
+        setTimeout(() => {
+          ripple.remove();
+          alert('تم اختيار الصورة الرمزية بنجاح!');
+        }, 600);
+      });
+      
+      // Create floating particles
+      const container = document.querySelector('.content-wrapper');
+      for (let i = 0; i < 10; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+        particle.style.width = `${Math.random() * 8 + 2}px`;
+        particle.style.height = particle.style.width;
+        particle.style.left = `${Math.random() * 100}%`;
+        particle.style.top = `${Math.random() * 100}%`;
+        particle.style.opacity = Math.random() * 0.3 + 0.1;
+        particle.style.animation = `float ${Math.random() * 10 + 10}s linear infinite`;
+        container.appendChild(particle);
+      }
+    });
+  </script>
+</body>
+</html>
