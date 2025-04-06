@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دليل سياحي ذكي</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
+        
+        :root {
+            --primary-color: #171D30;
+            --secondary-color: #FF7D00;
+            --accent-color: #00C2FF;
+            --text-color: #FFFFFF;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        .light-effect {
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0,194,255,0.2) 0%, rgba(0,194,255,0) 70%);
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+            transition: transform 0.1s ease-out;
+        }
+        
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            animation: fadeInDown 1s ease-out;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--secondary-color);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 30px;
+        }
+        
+        nav ul li a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+        
+        nav ul li a:hover {
+            color: var(--secondary-color);
+        }
+        
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            right: 0;
+            background-color: var(--secondary-color);
+            transition: width 0.3s;
+        }
+        
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+        
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 50px;
+            animation: fadeIn 1.5s ease-out;
+        }
+        
+        .hero-content {
+            flex: 1;
+            padding-left: 40px;
+        }
+        
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            line-height: 1.3;
+        }
+        
+        .hero h1 span {
+            color: var(--secondary-color);
+        }
+        
+        .hero p {
+            font-size: 18px;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+            padding: 12px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.3s;
+            border: 2px solid var(--secondary-color);
+            box-shadow: 0 5px 15px rgba(255, 125, 0, 0.3);
+        }
+        
+        .cta-button:hover {
+            background-color: transparent;
+            color: var(--secondary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 125, 0, 0.4);
+        }
+        
+        .hero-image {
+            flex: 1;
+            position: relative;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .hero-image img {
+            width: 100%;
+            max-width: 500px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .ai-features {
+            margin-top: 100px;
+            animation: fadeInUp 1s ease-out;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 50px;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 3px;
+            background-color: var(--secondary-color);
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .feature-icon {
+            font-size: 40px;
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+        }
+        
+        .feature-card h3 {
+            font-size: 22px;
+            margin-bottom: 15px;
+        }
+        
+        .feature-card p {
+            opacity: 0.8;
+            line-height: 1.6;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        /* تأثيرات الضوء عند التحويم */
+        .feature-card:hover .feature-icon {
+            text-shadow: 0 0 10px var(--accent-color);
+            transition: text-shadow 0.3s;
+        }
+        
+        /* تصميم متجاوب */
+        @media (max-width: 768px) {
+            .hero {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .hero-content {
+                padding-left: 0;
+                margin-bottom: 40px;
+            }
+            
+            nav ul {
+                display: none;
+            }
+            
+            .hero h1 {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="light-effect" id="lightEffect"></div>
+    
+    <div class="container">
+        <header>
+            <div class="logo">دليلي السياحي</div>
+            <nav>
+                <ul>
+                    <li><a href="#">الرئيسية</a></li>
+                    <li><a href="#">المميزات</a></li>
+                    <li><a href="#">الوجهات</a></li>
+                    <li><a href="#">التقييمات</a></li>
+                    <li><a href="#">اتصل بنا</a></li>
+                </ul>
+            </nav>
+        </header>
+        
+        <section class="hero">
+            <div class="hero-content">
+                <h1>اكتشف العالم مع <span>مرشد سياحي ذكي</span> يعمل بالذكاء الاصطناعي</h1>
+                <p>تطبيقنا السياحي المتقدم يستخدم أحدث تقنيات الذكاء الاصطناعي ليقدم لك تجربة سفر فريدة، مع تخطيط رحلات شخصية، ترجمة فورية، ونصائح محلية لا تقدر بثمن.</p>
+                <a href="#" class="cta-button">ابدأ رحلتك الآن</a>
+            </div>
+            <div class="hero-image">
+                <img src="https://via.placeholder.com/500x400/171D30/FFFFFF?text=دليل+سياحي+ذكي" alt="تطبيق الإرشاد السياحي">
+            </div>
+        </section>
+        
+        <section class="ai-features">
+            <h2 class="section-title">مميزات الذكاء الاصطناعي</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3>مرشد سياحي شخصي</h3>
+                    <p>احصل على مرشد سياحي افتراضي يعرف تفضيلاتك ويقترح أفضل الوجهات والأنشطة بناءً على اهتماماتك.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💬</div>
+                    <h3>ترجمة فورية</h3>
+                    <p>تحدث مع السكان المحليين بثقة مع نظام الترجمة الفورية المتكامل الذي يدعم أكثر من 100 لغة.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🗺️</div>
+                    <h3>تخطيط رحلات ذكي</h3>
+                    <p>يقوم الذكاء الاصطناعي بتخطيط رحلتك بالكامل مع الأخذ في الاعتبار الطقس، الازدحام، وأوقات العمل.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // تأثير حركة الضوء مع الماوس
+        document.addEventListener('mousemove', function(e) {
+            const light = document.getElementById('lightEffect');
+            light.style.left = e.pageX + 'px';
+            light.style.top = e.pageY + 'px';
+        });
+        
+        // تأثيرات عند التمرير
+        window.addEventListener('scroll', function() {
+            const scrollPosition = window.scrollY;
+            const heroImage = document.querySelector('.hero-image');
+            
+            heroImage.style.transform = `translateY(${scrollPosition * 0.2}px)`;
+        });
+        
+        // تأثيرات عند تحويم العناصر
+        const featureCards = document.querySelectorAll('.feature-card');
+        featureCards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                const icon = this.querySelector('.feature-icon');
+                icon.style.transform = 'scale(1.2)';
+                icon.style.transition = 'transform 0.3s';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                const icon = this.querySelector('.feature-icon');
+                icon.style.transform = 'scale(1)';
+            });
+        });
+    </script>
+</body>
+</html>
