@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>صورة الأهرامات مع نص</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700&display=swap');
+    
+    :root {
+      --primary: #4CAF50;
+      --primary-dark: #2E8B57;
+      --accent: #FFD700;
+      --bg: #121826;
+      --bg-light: #1a2038;
+      --text: #ffffff;
+    }
+    
+    * {
+      font-family: 'Tajawal', sans-serif;
+    }
+    
+    body {
+      background-color: var(--bg);
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+    
+    /* Cosmic Background */
+    .cosmic-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -3;
+      background: 
+        radial-gradient(circle at 20% 30%, rgba(76, 175, 80, 0.15) 0%, transparent 25%),
+        radial-gradient(circle at 80% 70%, rgba(255, 215, 0, 0.1) 0%, transparent 25%),
+        linear-gradient(135deg, var(--bg) 0%, var(--bg-light) 100%);
+    }
+    
+    /* Animated Stars */
+    .stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      overflow: hidden;
+    }
+    
+    .star {
+      position: absolute;
+      background-color: white;
+      border-radius: 50%;
+      animation: twinkle var(--duration) infinite ease-in-out;
+      opacity: var(--opacity);
+    }
+    
+    @keyframes twinkle {
+      0%, 100% { opacity: var(--opacity); }
+      50% { opacity: calc(var(--opacity) * 0.3); }
+    }
+    
+    /* Mouse Light Effect */
+    .cursor-light {
+      position: fixed;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0) 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      filter: blur(30px);
+    }
+    
+    body.light-effect .cursor-light {
+      opacity: 0.3;
+    }
+    
+    /* Custom Cursor */
+    .cursor {
+      position: fixed;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background-color: rgba(255, 230, 0, 0.7);
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      z-index: 9999;
+      mix-blend-mode: screen;
+      transition: transform 0.2s ease, background-color 0.2s ease;
+    }
+    
+    /* Content Wrapper */
+    .content-wrapper {
+      position: relative;
+      z-index: 1;
+      transform: translateY(30px);
+      opacity: 0;
+      animation: fadeInUp 1s ease forwards 0.3s;
+    }
+    
+    @keyframes fadeInUp {
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    
+    /* Image Container */
+    .image-container {
+      position: relative;
+      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .image-container:hover {
+      transform: scale(1.02);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+    }
+    
+    .image-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at var(--x) var(--y), 
+                    rgba(255, 215, 0, 0.1) 0%, 
+                    transparent 70%);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+    
+    .image-container:hover::before {
+      opacity: 1;
+    }
+    
+    /* Text Overlay */
+    .text-overlay {
+      position: absolute;
+      bottom: 20px;
+      right: 50%;
+      transform: translateX(50%);
+      background: linear-gradient(135deg, var(--accent), #FFC000);
+      border-radius: 9999px;
+      padding: 8px 16px;
+      box-shadow: 0 10px 25px rgba(255, 200, 0, 0.3);
+      transition: all 0.3s ease;
+    }
+    
+    .image-container:hover .text-overlay {
+      transform: translateX(50%) translateY(-5px);
+      box-shadow: 0 15px 30px rgba(255, 200, 0, 0.4);
+    }
+    
+    .avatar-img {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      border: 2px solid white;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+    }
+    
+    .avatar-img:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    .text-content {
+      color: #000;
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
+    }
+    
+    /* Floating particles */
+    .particle {
+      position: absolute;
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: -1;
+      animation: float 15s linear infinite;
+    }
+    
+    @keyframes float {
+      0% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-100px) rotate(180deg); }
+      100% { transform: translateY(0px) rotate(360deg); }
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .text-overlay {
+        padding: 6px 12px;
+      }
+      
+      .avatar-img {
+        width: 48px;
+        height: 48px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Cosmic Background Elements -->
+  <div class="cosmic-bg"></div>
+  <div class="stars" id="stars"></div>
+  <div class="cursor-light" id="cursorLight"></div>
+  <div class="cursor"></div>
+  
+  <!-- Main Content -->
+  <div class="content-wrapper px-4">
+    <div class="image-container" id="imageContainer">
+      <img alt="أهرامات الجيزة في مصر" class="w-full h-auto" src="https://storage.googleapis.com/a1aa/image/UGaOkIIw67dOEgyRdVaSKGUkSbOPpYjdNfNKt2NlTbg.jpg"/>
+      
+      <div class="text-overlay">
+        <div class="flex items-center space-x-2 space-x-reverse">
+          <img alt="شخصية كرتونية ترتدي غطاء رأس فرعوني" class="avatar-img" src="https://storage.googleapis.com/a1aa/image/MhM1D6E-ZyrjmaYffgHVYtXGSyr462YhZv4IriFgIQQ.jpg"/>
+          <div class="text-content">
+            <p class="font-bold text-sm md:text-base">هذه صورة للأهرامات</p>
+            <p class="text-xs md:text-sm">هل تريد معرفة في أي قرن بنيت؟</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Create stars
+      const starsContainer = document.getElementById('stars');
+      for (let i = 0; i < 100; i++) {
+        const star = document.createElement('div');
+        star.classList.add('star');
+        star.style.width = `${Math.random() * 3 + 1}px`;
+        star.style.height = star.style.width;
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.top = `${Math.random() * 100}%`;
+        star.style.setProperty('--duration', `${Math.random() * 5 + 3}s`);
+        star.style.setProperty('--opacity', Math.random() * 0.5 + 0.1);
+        starsContainer.appendChild(star);
+      }
+      
+      // Mouse Light Effect
+      const cursorLight = document.getElementById('cursorLight');
+      const cursor = document.querySelector('.cursor');
+      const imageContainer = document.getElementById('imageContainer');
+      
+      // Mouse move effects
+      document.addEventListener('mousemove', (e) => {
+        // Move custom cursor
+        cursor.style.left = e.clientX + 'px';
+        cursor.style.top = e.clientY + 'px';
+        
+        // Move light effect
+        cursorLight.style.left = e.clientX + 'px';
+        cursorLight.style.top = e.clientY + 'px';
+        document.body.classList.add('light-effect');
+        
+        // Update image container gradient position
+        const { left, top } = imageContainer.getBoundingClientRect();
+        const containerX = e.clientX - left;
+        const containerY = e.clientY - top;
+        
+        imageContainer.style.setProperty('--x', `${containerX}px`);
+        imageContainer.style.setProperty('--y', `${containerY}px`);
+        
+        // Parallax effect
+        const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
+        const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
+        imageContainer.style.transform = `translate(${xAxis}px, ${yAxis}px) scale(1.02)`;
+      });
+      
+      document.addEventListener('mouseout', () => {
+        document.body.classList.remove('light-effect');
+        imageContainer.style.transform = 'translate(0) scale(1)';
+      });
+      
+      // Create floating particles
+      const container = document.querySelector('.content-wrapper');
+      for (let i = 0; i < 10; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+        particle.style.width = `${Math.random() * 8 + 2}px`;
+        particle.style.height = particle.style.width;
+        particle.style.left = `${Math.random() * 100}%`;
+        particle.style.top = `${Math.random() * 100}%`;
+        particle.style.opacity = Math.random() * 0.3 + 0.1;
+        particle.style.animation = `float ${Math.random() * 10 + 10}s linear infinite`;
+        container.appendChild(particle);
+      }
+      
+      // Add hover effects for interactive elements
+      const interactiveElements = document.querySelectorAll('.image-container, .text-overlay, .avatar-img');
+      interactiveElements.forEach(el => {
+        el.addEventListener('mouseenter', () => {
+          cursor.style.transform = 'translate(-50%, -50%) scale(1.5)';
+          cursor.style.backgroundColor = 'rgba(255, 200, 0, 0.8)';
+        });
+        
+        el.addEventListener('mouseleave', () => {
+          cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+          cursor.style.backgroundColor = 'rgba(255, 230, 0, 0.7)';
+        });
+      });
+      
+      // Click effect for text overlay
+      const textOverlay = document.querySelector('.text-overlay');
+      textOverlay.addEventListener('click', function() {
+        alert('تم بناء الأهرامات في مصر القديمة خلال الفترة من حوالي 2580-2560 قبل الميلاد (القرن السادس والعشرون قبل الميلاد)');
+      });
+    });
+  </script>
+</body>
+</html>

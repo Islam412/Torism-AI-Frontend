@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>برنامج الإرشاد السياحي</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700&display=swap');
+        
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --bg: #121826;
+            --bg-light: #1a2038;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--light-color);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Cosmic Background */
+        .cosmic-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -3;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(53, 152, 219, 0.15) 0%, transparent 25%),
+                radial-gradient(circle at 80% 70%, rgba(231, 76, 60, 0.1) 0%, transparent 25%),
+                linear-gradient(135deg, var(--bg) 0%, var(--bg-light) 100%);
+        }
+
+        /* Animated Stars */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            overflow: hidden;
+        }
+
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle var(--duration) infinite ease-in-out;
+            opacity: var(--opacity);
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: var(--opacity); }
+            50% { opacity: calc(var(--opacity) * 0.3); }
+        }
+
+        /* Mouse Light Effect */
+        .cursor-light {
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            filter: blur(30px);
+        }
+
+        body.light-effect .cursor-light {
+            opacity: 0.3;
+        }
+
+        /* Custom Cursor */
+        .cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: rgba(255, 230, 0, 0.7);
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            mix-blend-mode: screen;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+
+        header {
+            background-color: rgba(44, 62, 80, 0.9);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo i {
+            color: var(--accent-color);
+            margin-left: 10px;
+        }
+
+        nav {
+            background-color: rgba(52, 152, 219, 0.9);
+            padding: 0.5rem;
+            backdrop-filter: blur(5px);
+            position: relative;
+            z-index: 1;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            justify-content: center;
+        }
+
+        nav ul li {
+            margin: 0 1rem;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        nav ul li a:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .search-container {
+            display: flex;
+            justify-content: center;
+            padding: 1rem;
+            background-color: rgba(236, 240, 241, 0.1);
+            backdrop-filter: blur(5px);
+            position: relative;
+            z-index: 1;
+        }
+
+        .search-box {
+            display: flex;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 0.8rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 5px 0 0 5px;
+            font-size: 1rem;
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .search-box input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .search-box button {
+            padding: 0 1.5rem;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .search-box button:hover {
+            background-color: #c0392b;
+            transform: translateY(-1px);
+        }
+
+        main {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--light-color);
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background-color: var(--accent-color);
+        }
+
+        .destinations {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .destination-card {
+            background-color: rgba(44, 62, 80, 0.7);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .destination-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .destination-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at var(--x) var(--y), 
+                          rgba(231, 76, 60, 0.1) 0%, 
+                          transparent 70%);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .destination-card:hover::before {
+            opacity: 1;
+        }
+
+        .card-image {
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .destination-card:hover .card-image img {
+            transform: scale(1.1);
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        .card-content h3 {
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+
+        .card-content p {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .rating {
+            color: #f39c12;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.6rem 1.2rem;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(41, 128, 185, 0.4);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .feature-box {
+            background-color: rgba(44, 62, 80, 0.7);
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+
+        .feature-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .feature-box i {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .feature-box h3 {
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+
+        .feature-box p {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.5;
+        }
+
+        .testimonials {
+            background-color: rgba(44, 62, 80, 0.7);
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 3rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .testimonial-slider {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .testimonial-slide {
+            padding: 1rem;
+            text-align: center;
+            display: none;
+        }
+
+        .testimonial-slide.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .testimonial-slide .quote {
+            font-size: 1.2rem;
+            font-style: italic;
+            color: white;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .testimonial-slide .author {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .slider-controls {
+            display: flex;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .slider-controls button {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            cursor: pointer;
+            margin: 0 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .slider-controls button:hover {
+            color: var(--accent-color);
+            transform: scale(1.2);
+        }
+
+        footer {
+            background-color: rgba(44, 62, 80, 0.9);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+            backdrop-filter: blur(5px);
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .footer-links a {
+            color: white;
+            margin: 0 1rem;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-color);
+            text-decoration: underline;
+        }
+
+        .social-links {
+            margin-bottom: 1rem;
+        }
+
+        .social-links a {
+            color: white;
+            font-size: 1.5rem;
+            margin: 0 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .social-links a:hover {
+            color: var(--accent-color);
+            transform: translateY(-3px);
+        }
+
+        /* Floating particles */
+        .particle {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: -1;
+            animation: float 15s linear infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-100px) rotate(180deg); }
+            100% { transform: translateY(0px) rotate(360deg); }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            nav ul li {
+                margin: 0.5rem 0;
+            }
+
+            .destinations {
+                grid-template-columns: 1fr;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Cosmic Background Elements -->
+    <div class="cosmic-bg"></div>
+    <div class="stars" id="stars"></div>
+    <div class="cursor-light" id="cursorLight"></div>
+    <div class="cursor"></div>
+    
+    <header>
+        <div class="logo">
+            <i class="fas fa-map-marked-alt"></i>
+            دليل السياحة
+        </div>
+        <p>اكتشف أجمل الوجهات والمعالم السياحية حول العالم</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#"><i class="fas fa-home"></i> الرئيسية</a></li>
+            <li><a href="#"><i class="fa-solid fa-user-astronaut"></i> اختيار الشخصية</a></li>
+            <li><a href="#"><i class="fa-solid fa-microphone-lines"></i> صوت الشخصية</a></li>
+            <li><a href="#"><i class="fa-solid fa-robot"></i> دليلي</a></li>
+            <li><a href="#"><i class="fa-solid fa-user"></i> البروفايل</a></li>
+            <li><a href="#"><i class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج</a></li>
+        </ul>
+    </nav>
+
+    <div class="search-container">
+        <div class="search-box">
+            <input type="text" placeholder="ابحث عن وجهة سياحية..." id="search-input">
+            <button id="search-btn"><i class="fas fa-search"></i> بحث</button>
+        </div>
+    </div>
+
+    <main>
+        <section class="popular-destinations">
+            <h2 class="section-title">الوجهات السياحية الشهيرة</h2>
+            <div class="destinations" id="destinations-container">
+                <!-- سيتم ملؤها بواسطة JavaScript -->
+            </div>
+        </section>
+
+        <section class="features-section">
+            <h2 class="section-title">لماذا تختار دليل السياحة؟</h2>
+            <div class="features">
+                <div class="feature-box">
+                    <i class="fas fa-globe-africa"></i>
+                    <h3>وجهات متنوعة</h3>
+                    <p>اكتشف آلاف الوجهات السياحية حول العالم مع تفاصيل دقيقة عن كل مكان</p>
+                </div>
+                <div class="feature-box">
+                    <i class="fas fa-map-signs"></i>
+                    <h3>دليل سياحي متكامل</h3>
+                    <p>احصل على معلومات كاملة عن المعالم السياحية، الفنادق، المطاعم وأكثر</p>
+                </div>
+                <div class="feature-box">
+                    <i class="fas fa-comments"></i>
+                    <h3>آراء حقيقية</h3>
+                    <p>اقرأ تقييمات وتجارب المسافرين الحقيقيين قبل اتخاذ قرارك</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="testimonials-section">
+            <h2 class="section-title">آراء المسافرين</h2>
+            <div class="testimonials">
+                <div class="testimonial-slider">
+                    <div class="testimonial-slide active">
+                        <p class="quote">"لقد ساعدني دليل السياحة في التخطيط لرحلتي إلى تركيا بشكل رائع، كل التفاصيل كانت دقيقة ومفيدة جداً"</p>
+                        <p class="author">- أحمد محمد</p>
+                    </div>
+                    <div class="testimonial-slide">
+                        <p class="quote">"أفضل تطبيق سياحي استخدمته على الإطلاق، واجهة بسيطة ومعلومات شاملة عن كل الوجهات"</p>
+                        <p class="author">- سارة خالد</p>
+                    </div>
+                    <div class="testimonial-slide">
+                        <p class="quote">"بفضل دليل السياحة اكتشفت أماكن رائعة في مدينتي لم أكن أعرف عنها شيئاً من قبل!"</p>
+                        <p class="author">- يوسف عبدالله</p>
+                    </div>
+                </div>
+                <div class="slider-controls">
+                    <button id="prev-testimonial"><i class="fas fa-chevron-right"></i></button>
+                    <button id="next-testimonial"><i class="fas fa-chevron-left"></i></button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-links">
+            <a href="#">عن الشركة</a>
+            <a href="#">الشروط والأحكام</a>
+            <a href="#">سياسة الخصوصية</a>
+            <a href="#">وظائف</a>
+        </div>
+        <div class="social-links">
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+        </div>
+        <p>&copy; 2023 دليل السياحة. جميع الحقوق محفوظة.</p>
+    </footer>
+
+    <script>
+        // بيانات الوجهات السياحية
+        const destinations = [
+            {
+                id: 1,
+                title: "الأهرامات، مصر",
+                description: "أحد عجائب الدنيا السبع وأشهر المعالم السياحية في العالم، تقع في محافظة الجيزة.",
+                image: "https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+                rating: 4.8,
+                reviews: 1245
+            },
+            {
+                id: 2,
+                title: "برج خليفة، دبي",
+                description: "أطول مبنى في العالم بارتفاع 828 متراً، ويوفر إطلالات رائعة على مدينة دبي.",
+                image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+                rating: 4.7,
+                reviews: 982
+            },
+            {
+                id: 3,
+                title: "البتراء، الأردن",
+                description: "مدينة أثرية تعود إلى حضارة الأنباط، منحوتة في الصخور الوردية.",
+                image: "https://images.unsplash.com/photo-1551523711-2a6dd03f88e3?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+                rating: 4.9,
+                reviews: 876
+            },
+            {
+                id: 4,
+                title: "شاطئ الجزيرة الخضراء، السعودية",
+                description: "واحة خضراء في وسط البحر الأحمر، تتميز بمياهها الفيروزية وطبيعتها الساحرة.",
+                image: "https://images.unsplash.com/photo-1581259011730-6b7d41e7f054?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+                rating: 4.6,
+                reviews: 543
+            },
+            {
+                id: 5,
+                title: "مسجد الشيخ زايد، الإمارات",
+                description: "ثالث أكبر مسجد في العالم، ويتميز بتصميمه المعماري الفريد وأعمدته الذهبية.",
+                image: "https://images.unsplash.com/photo-1581866323163-699b23d8f0f3?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+                rating: 4.8,
+                reviews: 765
+            },
+            {
+                id: 6,
+                title: "وادي رم، الأردن",
+                description: "واد صحراوي ساحر يعرف باسم وادي القمر، مع تشكيلات صخرية مذهلة.",
+                image: "https://images.unsplash.com/photo-1551524559-8af4e6624178?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+                rating: 4.7,
+                reviews: 432
+            }
+        ];
+
+        // إنشاء النجوم
+        const starsContainer = document.getElementById('stars');
+        for (let i = 0; i < 100; i++) {
+            const star = document.createElement('div');
+            star.classList.add('star');
+            star.style.width = `${Math.random() * 3 + 1}px`;
+            star.style.height = star.style.width;
+            star.style.left = `${Math.random() * 100}%`;
+            star.style.top = `${Math.random() * 100}%`;
+            star.style.setProperty('--duration', `${Math.random() * 5 + 3}s`);
+            star.style.setProperty('--opacity', Math.random() * 0.5 + 0.1);
+            starsContainer.appendChild(star);
+        }
+
+        // تأثير ضوء الماوس
+        const cursorLight = document.getElementById('cursorLight');
+        const cursor = document.querySelector('.cursor');
+        
+        document.addEventListener('mousemove', (e) => {
+            document.body.classList.add('light-effect');
+            cursor.style.left = `${e.clientX}px`;
+            cursor.style.top = `${e.clientY}px`;
+            cursorLight.style.left = `${e.clientX}px`;
+            cursorLight.style.top = `${e.clientY}px`;
+            
+            // تحديث تأثير التدرج على بطاقات الوجهات
+            const cards = document.querySelectorAll('.destination-card');
+            cards.forEach(card => {
+                const { left, top } = card.getBoundingClientRect();
+                const cardX = e.clientX - left;
+                const cardY = e.clientY - top;
+                card.style.setProperty('--x', `${cardX}px`);
+                card.style.setProperty('--y', `${cardY}px`);
+            });
+        });
+        
+        document.addEventListener('mouseout', () => {
+            document.body.classList.remove('light-effect');
+        });
+
+        // عرض الوجهات السياحية
+        const destinationsContainer = document.getElementById('destinations-container');
+        
+        function displayDestinations(dests) {
+            destinationsContainer.innerHTML = '';
+            
+            dests.forEach(destination => {
+                const card = document.createElement('div');
+                card.className = 'destination-card';
+                
+                card.innerHTML = `
+                    <div class="card-image">
+                        <img src="${destination.image}" alt="${destination.title}">
+                    </div>
+                    <div class="card-content">
+                        <h3>${destination.title}</h3>
+                        <p>${destination.description}</p>
+                        <div class="card-meta">
+                            <div class="rating">
+                                ${'<i class="fas fa-star"></i>'.repeat(Math.floor(destination.rating))}
+                                ${destination.rating % 1 >= 0.5 ? '<i class="fas fa-star-half-alt"></i>' : ''}
+                                <span>${destination.rating}</span>
+                            </div>
+                            <span>${destination.reviews} تقييم</span>
+                        </div>
+                        <button class="btn">المزيد من التفاصيل</button>
+                    </div>
+                `;
+                
+                destinationsContainer.appendChild(card);
+            });
+        }
+
+        // البحث عن الوجهات
+        const searchInput = document.getElementById('search-input');
+        const searchBtn = document.getElementById('search-btn');
+        
+        searchBtn.addEventListener('click', () => {
+            const searchTerm = searchInput.value.toLowerCase();
+            const filteredDestinations = destinations.filter(dest => 
+                dest.title.toLowerCase().includes(searchTerm) || 
+                dest.description.toLowerCase().includes(searchTerm)
+            );
+            displayDestinations(filteredDestinations);
+        });
+
+        // عرض جميع الوجهات عند تحميل الصفحة
+        window.addEventListener('load', () => {
+            displayDestinations(destinations);
+            
+            // إنشاء جسيمات عائمة
+            const container = document.querySelector('main');
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                particle.style.width = `${Math.random() * 8 + 2}px`;
+                particle.style.height = particle.style.width;
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                particle.style.opacity = Math.random() * 0.3 + 0.1;
+                particle.style.animation = `float ${Math.random() * 10 + 10}s linear infinite`;
+                container.appendChild(particle);
+            }
+        });
+
+        // شريط آراء المسافرين
+        const testimonialSlides = document.querySelectorAll('.testimonial-slide');
+        const prevBtn = document.getElementById('prev-testimonial');
+        const nextBtn = document.getElementById('next-testimonial');
+        let currentSlide = 0;
+
+        function showSlide(index) {
+            testimonialSlides.forEach(slide => slide.classList.remove('active'));
+            testimonialSlides[index].classList.add('active');
+        }
+
+        nextBtn.addEventListener('click', () => {
+            currentSlide = (currentSlide + 1) % testimonialSlides.length;
+            showSlide(currentSlide);
+        });
+
+        prevBtn.addEventListener('click', () => {
+            currentSlide = (currentSlide - 1 + testimonialSlides.length) % testimonialSlides.length;
+            showSlide(currentSlide);
+        });
+
+        // تغيير الشريط تلقائياً كل 5 ثواني
+        setInterval(() => {
+            currentSlide = (currentSlide + 1) % testimonialSlides.length;
+            showSlide(currentSlide);
+        }, 5000);
+    </script>
+</body>
+</html>

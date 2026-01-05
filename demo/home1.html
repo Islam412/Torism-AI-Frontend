@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دليل السفر - برنامج الإرشاد السياحي</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2D4059;
+            --secondary: #EA5455;
+            --accent: #FFB400;
+            --light: #F6F6F6;
+            --dark: #222831;
+            --bg-color: #171D30;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--light);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* تأثيرات الضوء والحركة */
+        .light-effect {
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,180,0,0.15) 0%, rgba(255,180,0,0) 70%);
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        @font-face {
+            font-family: 'Tajawal';
+            src: url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
+        }
+
+        .navbar {
+            background-color: rgba(23, 29, 48, 0.9);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            color: var(--secondary);
+            font-size: 2rem;
+            margin-left: 10px;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .logo-text span {
+            color: var(--secondary);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-right: 1.5rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        .nav-links a.active {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        .nav-links a.active:hover {
+            background-color: #d14344;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: white;
+            cursor: pointer;
+        }
+
+        .hero {
+            background: linear-gradient(rgba(23, 29, 48, 0.8), rgba(23, 29, 48, 0.8)), 
+                        url('https://images.unsplash.com/photo-1464037866556-6812c9d1c72e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            height: 80vh;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(234, 84, 85, 0.1) 0%, rgba(23, 29, 48, 0.9) 70%);
+            z-index: 0;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .search-box {
+            display: flex;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            margin-top: 2rem;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .search-box:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 1.2rem 1.5rem;
+            border: none;
+            outline: none;
+            font-size: 1rem;
+            background: transparent;
+            color: white;
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .search-btn {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 0 2rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-weight: bold;
+        }
+
+        .search-btn:hover {
+            background-color: #d14344;
+        }
+
+        .section {
+            padding: 5rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .section-title h2 {
+            font-size: 2.2rem;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .section-title p {
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: var(--secondary);
+            margin: 1.5rem auto 0;
+        }
+
+        .destinations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .destination-card {
+            background: rgba(45, 64, 89, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .destination-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            background: rgba(45, 64, 89, 0.5);
+        }
+
+        .card-img {
+            height: 250px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .card-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .destination-card:hover .card-img img {
+            transform: scale(1.1);
+        }
+
+        .card-badge {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: var(--accent);
+            color: var(--bg-color);
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        .card-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+
+        .card-content .location {
+            color: var(--accent);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .location i {
+            margin-left: 5px;
+        }
+
+        .card-content p {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .price {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        .price span {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+            font-weight: normal;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.7rem 1.5rem;
+            background: var(--secondary);
+            color: white;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(234, 84, 85, 0.3);
+        }
+
+        .btn:hover {
+            background: #d14344;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(234, 84, 85, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--secondary);
+            color: var(--secondary);
+        }
+
+        .btn-outline:hover {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: rgba(45, 64, 89, 0.3);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            transition: transform 0.3s;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            background: rgba(45, 64, 89, 0.5);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(234, 84, 85, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover .feature-icon {
+            background: rgba(234, 84, 85, 0.3);
+            transform: scale(1.1);
+        }
+
+        .feature-icon i {
+            font-size: 2rem;
+            color: var(--accent);
+        }
+
+        .feature-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .feature-card p {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+        }
+
+        .testimonials-section {
+            background: linear-gradient(rgba(23, 29, 48, 0.9), rgba(23, 29, 48, 0.9)), 
+                      url('https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-attachment: fixed;
+            color: white;
+            padding: 5rem 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .testimonials-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(255, 180, 0, 0.1) 0%, rgba(23, 29, 48, 0.9) 70%);
+            z-index: 0;
+        }
+
+        .testimonials-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .testimonial-slider {
+            position: relative;
+            overflow: hidden;
+            margin-top: 3rem;
+        }
+
+        .testimonial {
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            margin: 0 1rem;
+            transition: all 0.5s ease;
+            display: none;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .testimonial.active {
+            display: block;
+        }
+
+        .testimonial-text {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            font-style: italic;
+            position: relative;
+            color: white;
+        }
+
+        .testimonial-text::before,
+        .testimonial-text::after {
+            content: '"';
+            font-size: 3rem;
+            color: rgba(255, 255, 255, 0.2);
+            position: absolute;
+        }
+
+        .testimonial-text::before {
+            top: -20px;
+            left: -10px;
+        }
+
+        .testimonial-text::after {
+            bottom: -40px;
+            right: -10px;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .author-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-left: 1rem;
+            border: 2px solid var(--accent);
+        }
+
+        .author-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .author-info h4 {
+            font-size: 1.2rem;
+            margin-bottom: 0.3rem;
+            color: white;
+        }
+
+        .author-info p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .slider-dots {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            margin: 0 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .dot.active {
+            background: var(--accent);
+            transform: scale(1.2);
+        }
+
+        .newsletter {
+            background: linear-gradient(135deg, rgba(45, 64, 89, 0.8), rgba(23, 29, 48, 0.9));
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .newsletter::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(234, 84, 85, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+            z-index: 0;
+        }
+
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .newsletter-container {
+            max-width: 700px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .newsletter h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .newsletter p {
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            opacity: 0.8;
+        }
+
+        .newsletter-form {
+            display: flex;
+            max-width: 500px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .newsletter-input {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 5px 0 0 5px;
+            font-size: 1rem;
+            outline: none;
+            background: transparent;
+            color: white;
+        }
+
+        .newsletter-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .newsletter-btn {
+            background: var(--accent);
+            color: var(--bg-color);
+            border: none;
+            padding: 0 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 0 5px 5px 0;
+            transition: background 0.3s;
+        }
+
+        .newsletter-btn:hover {
+            background: #e6a200;
+        }
+
+        .footer {
+            background: linear-gradient(to bottom, rgba(23, 29, 48, 0.9), rgba(15, 20, 35, 1)));
+            color: white;
+            padding: 4rem 2rem 2rem;
+            position: relative;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--accent), transparent);
+        }
+
+        .footer-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-col h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .footer-col h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 50px;
+            height: 2px;
+            background: var(--secondary);
+        }
+
+        .footer-col p {
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            opacity: 0.8;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: all 0.3s;
+            display: block;
+        }
+
+        .footer-links a:hover {
+            opacity: 1;
+            transform: translateX(-5px);
+            color: var(--accent);
+        }
+
+        .social-links {
+            display: flex;
+            margin-top: 1.5rem;
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            margin-left: 10px;
+            color: white;
+            transition: all 0.3s;
+        }
+
+        .social-links a:hover {
+            background: var(--secondary);
+            transform: translateY(-5px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 992px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                right: 0;
+                width: 100%;
+                background: rgba(23, 29, 48, 0.95);
+                flex-direction: column;
+                padding: 1rem 0;
+                backdrop-filter: blur(10px);
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .nav-links.show {
+                display: flex;
+            }
+
+            .nav-links li {
+                margin: 0;
+                text-align: center;
+                padding: 0.5rem 0;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .section {
+                padding: 3rem 1.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .search-box {
+                flex-direction: column;
+                border-radius: 10px;
+            }
+
+            .search-input {
+                border-radius: 10px 10px 0 0;
+            }
+
+            .search-btn {
+                border-radius: 0 0 10px 10px;
+                padding: 1rem;
+            }
+
+            .destinations-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .newsletter-form {
+                flex-direction: column;
+            }
+
+            .newsletter-input {
+                border-radius: 5px 5px 0 0;
+            }
+
+            .newsletter-btn {
+                border-radius: 0 0 5px 5px;
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- تأثير الضوء الذي يتبع الماوس -->
+    <div class="light-effect" id="light-effect"></div>
+    
+    <!-- تأثير الجسيمات المتحركة -->
+    <div class="particles" id="particles"></div>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-map-marked-alt"></i>
+                <div class="logo-text">دليل<span>السفر</span></div>
+            </div>
+            
+            <ul class="nav-links">
+                <li><a href="#" class="active">الرئيسية</a></li>
+                <li><a href="#">الوجهات</a></li>
+                <li><a href="#">الجولات</a></li>
+                <li><a href="#">الفنادق</a></li>
+                <li><a href="#">عن البرنامج</a></li>
+                <li><a href="#">اتصل بنا</a></li>
+            </ul>
+            
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>اكتشف العالم مع دليل السفر</h1>
+            <p>أفضل برنامج إرشاد سياحي يساعدك في اكتشاف أجمل الوجهات حول العالم وتخطيط رحلتك المثالية</p>
+            
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="أين تريد أن تسافر اليوم؟">
+                <button class="search-btn"><i class="fas fa-search"></i> بحث</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="section-title">
+            <h2>الوجهات السياحية المميزة</h2>
+            <p>اكتشف أجمل الوجهات السياحية التي نوصي بها لهذا الموسم</p>
+        </div>
+        
+        <div class="destinations-grid" id="destinations-container">
+            <!-- سيتم ملؤها بواسطة JavaScript -->
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="section-title">
+            <h2>لماذا تختار دليل السفر؟</h2>
+            <p>نقدم لك أفضل تجربة سفر من خلال ميزاتنا الفريدة</p>
+        </div>
+        
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-map-marked-alt"></i>
+                </div>
+                <h3>خرائط تفاعلية</h3>
+                <p>استكشف الوجهات السياحية من خلال خرائط تفاعلية توضح جميع المعالم والأماكن المهمة</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-route"></i>
+                </div>
+                <h3>مسارات مخصصة</h3>
+                <p>احصل على مسارات سياحية مخصصة حسب اهتماماتك ومدة إقامتك</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-comment-dots"></i>
+                </div>
+                <h3>دليل صوتي</h3>
+                <p>استمتع بدليل صوتي يشرح لك المعالم السياحية أثناء زيارتك لها</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="testimonials-section">
+        <div class="testimonials-container">
+            <h2>آراء المسافرين</h2>
+            <p>ما يقوله عملاؤنا عن تجربتهم مع دليل السفر</p>
+            
+            <div class="testimonial-slider">
+                <div class="testimonial active">
+                    <p class="testimonial-text">لقد ساعدني دليل السفر في اكتشاف أماكن رائعة في إسطنبول لم أكن أعرف عنها من قبل، التطبيق سهل الاستخدام والمعلومات دقيقة جداً</p>
+                    <div class="testimonial-author">
+                        <div class="author-img">
+                            <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="سارة محمد">
+                        </div>
+                        <div class="author-info">
+                            <h4>سارة محمد</h4>
+                            <p>مسافرة إلى تركيا</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial">
+                    <p class="testimonial-text">أفضل تطبيق سياحي استخدمته على الإطلاق، وفر علي الكثير من الوقت والجهد في التخطيط لرحلتي إلى اليونان</p>
+                    <div class="testimonial-author">
+                        <div class="author-img">
+                            <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="أحمد خالد">
+                        </div>
+                        <div class="author-info">
+                            <h4>أحمد خالد</h4>
+                            <p>مسافر إلى اليونان</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial">
+                    <p class="testimonial-text">الدليل الصوتي كان ممتازاً وساعدني في فهم التاريخ والثقافة خلف كل معلم زرتوه في رحلتي إلى إيطاليا</p>
+                    <div class="testimonial-author">
+                        <div class="author-img">
+                            <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="نورا عبدالله">
+                        </div>
+                        <div class="author-info">
+                            <h4>نورا عبدالله</h4>
+                            <p>مسافرة إلى إيطاليا</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="slider-dots">
+                <div class="dot active" data-slide="0"></div>
+                <div class="dot" data-slide="1"></div>
+                <div class="dot" data-slide="2"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="newsletter">
+        <div class="newsletter-container">
+            <h2>اشترك في نشرتنا البريدية</h2>
+            <p>احصل على آخر العروض والوجهات السياحية المميزة مباشرة إلى بريدك الإلكتروني</p>
+            
+            <form class="newsletter-form">
+                <input type="email" class="newsletter-input" placeholder="بريدك الإلكتروني" required>
+                <button type="submit" class="newsletter-btn">اشتراك</button>
+            </form>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <h3>عن دليل السفر</h3>
+                <p>نحن منصة سياحية رائدة تهدف إلى تقديم أفضل تجربة سفر من خلال توفير معلومات دقيقة وخدمات مميزة.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-col">
+                <h3>روابط سريعة</h3>
+                <ul class="footer-links">
+                    <li><a href="#">الرئيسية</a></li>
+                    <li><a href="#">الوجهات</a></li>
+                    <li><a href="#">الجولات</a></li>
+                    <li><a href="#">الفنادق</a></li>
+                    <li><a href="#">اتصل بنا</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h3>الوجهات الشعبية</h3>
+                <ul class="footer-links">
+                    <li><a href="#">إسطنبول، تركيا</a></li>
+                    <li><a href="#">دبي، الإمارات</a></li>
+                    <li><a href="#">روما، إيطاليا</a></li>
+                    <li><a href="#">باريس، فرنسا</a></li>
+                    <li><a href="#">اليونان</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h3>اتصل بنا</h3>
+                <ul class="footer-links">
+                    <li><a href="#"><i class="fas fa-phone"></i> +966 12 345 6789</a></li>
+                    <li><a href="#"><i class="fas fa-envelope"></i> info@safariguide.com</a></li>
+                    <li><a href="#"><i class="fas fa-map-marker-alt"></i> الرياض، المملكة العربية السعودية</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="copyright">
+            <p>&copy; 2023 دليل السفر. جميع الحقوق محفوظة.</p>
+        </div>
+    </footer>
+
+    <script>
+        // بيانات الوجهات السياحية
+        const destinations = [
+            {
+                id: 1,
+                title: "إسطنبول، تركيا",
+                description: "مدينة تجمع بين التاريخ والحداثة، تشتهر بمساجدها التاريخية والأسواق الشعبية والمأكولات اللذيذة.",
+                image: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?ixlib=rb-1.2.1&auto=format&fit=crop&w=1351&q=80",
+                badge: "الأكثر زيارة",
+                price: "1,200",
+                location: "تركيا"
+            },
+            {
+                id: 2,
+                title: "دبي، الإمارات",
+                description: "مدينة المستقبل التي تخطف الأنفاس بناطحات السحاب والفنادق الفاخرة والصحاري الذهبية.",
+                image: "https://images.unsplash.com/photo-1518684079-3c830dcef090?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+                badge: "عروض خاصة",
+                price: "2,500",
+                location: "الإمارات"
+            },
+            {
+                id: 3,
+                title: "روما، إيطاليا",
+                description: "العاصمة الإيطالية العريقة التي تحوي آثاراً رومانية قديمة وكنائس رائعة وأجواءً رومانسية.",
+                image: "https://images.unsplash.com/photo-1552832230-c0197dd311b5?ixlib=rb-1.2.1&auto=format&fit=crop&w=1352&q=80",
+                badge: "جديد",
+                price: "1,800",
+                location: "إيطاليا"
+            },
+            {
+                id: 4,
+                title: "ماليزيا",
+                description: "بلد التنوع الثقافي والطبيعي حيث الغابات المطيرة والشواطئ الذهبية وناطحات السحاب الحديثة.",
+                image: "https://images.unsplash.com/photo-1583951091469-3c8bdd0a8a7d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+                badge: "شعبية",
+                price: "1,500",
+                location: "كوالالمبور"
+            },
+            {
+                id: 5,
+                title: "اليونان",
+                description: "موطن الحضارة القديمة والجزر الساحرة والمباني البيضاء ذات القباب الزرقاء المشهورة.",
+                image: "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+                badge: "مميز",
+                price: "1,700",
+                location: "أثينا"
+            },
+            {
+                id: 6,
+                title: "باريس، فرنسا",
+                description: "عاصمة النور والرومانسية، تشتهر ببرج إيفل ومتاحفها العالمية وشوارعها الأنيقة.",
+                image: "https://images.unsplash.com/photo-1431274172761-fca41d930114?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+                badge: "كلاسيكية",
+                price: "2,200",
+                location: "فرنسا"
+            }
+        ];
+
+        // عرض الوجهات السياحية
+        const destinationsContainer = document.getElementById('destinations-container');
+        
+        function displayDestinations(dests) {
+            destinationsContainer.innerHTML = '';
+            
+            dests.forEach(destination => {
+                const card = document.createElement('div');
+                card.className = 'destination-card';
+                
+                card.innerHTML = `
+                    <div class="card-img">
+                        <img src="${destination.image}" alt="${destination.title}">
+                        <div class="card-badge">${destination.badge}</div>
+                    </div>
+                    <div class="card-content">
+                        <h3>${destination.title}</h3>
+                        <div class="location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            ${destination.location}
+                        </div>
+                        <p>${destination.description}</p>
+                        <div class="card-footer">
+                            <div class="price">
+                                ${destination.price} ريال <span>للشخص</span>
+                            </div>
+                            <a href="#" class="btn">احجز الآن</a>
+                        </div>
+                    </div>
+                `;
+                
+                destinationsContainer.appendChild(card);
+            });
+        }
+
+        // البحث عن الوجهات
+        const searchInput = document.querySelector('.search-input');
+        const searchBtn = document.querySelector('.search-btn');
+        
+        searchBtn.addEventListener('click', () => {
+            const searchTerm = searchInput.value.toLowerCase();
+            const filteredDestinations = destinations.filter(dest => 
+                dest.title.toLowerCase().includes(searchTerm) || 
+                dest.description.toLowerCase().includes(searchTerm) ||
+                dest.location.toLowerCase().includes(searchTerm)
+            );
+            displayDestinations(filteredDestinations);
+        });
+
+        // عرض جميع الوجهات عند تحميل الصفحة
+        window.addEventListener('load', () => {
+            displayDestinations(destinations);
+        });
+
+        // شريط آراء المسافرين
+        const testimonials = document.querySelectorAll('.testimonial');
+        const dots = document.querySelectorAll('.dot');
+        let currentTestimonial = 0;
+
+        function showTestimonial(index) {
+            testimonials.forEach(testimonial => testimonial.classList.remove('active'));
+            dots.forEach(dot => dot.classList.remove('active'));
+            
+            testimonials[index].classList.add('active');
+            dots[index].classList.add('active');
+            currentTestimonial = index;
+        }
+
+        dots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                showTestimonial(index);
+            });
+        });
+
+        // تغيير الشهادة تلقائياً كل 5 ثوان
+        setInterval(() => {
+            currentTestimonial = (currentTestimonial + 1) % testimonials.length;
+            showTestimonial(currentTestimonial);
+        }, 5000);
+
+        // إرسال النشرة البريدية
+        const newsletterForm = document.querySelector('.newsletter-form');
+        
+        newsletterForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = newsletterForm.querySelector('input').value;
+            alert(`شكراً لك على اشتراكك في النشرة البريدية! سيتم إرسال العروض إلى ${email}`);
+            newsletterForm.reset();
+        });
+
+        // القائمة المتنقلة للهواتف
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('show');
+        });
+
+        // تأثير الضوء الذي يتبع الماوس
+        const lightEffect = document.getElementById('light-effect');
+        
+        document.addEventListener('mousemove', (e) => {
+            lightEffect.style.left = `${e.clientX}px`;
+            lightEffect.style.top = `${e.clientY}px`;
+            lightEffect.style.opacity = '1';
+        });
+
+        document.addEventListener('mouseout', () => {
+            lightEffect.style.opacity = '0';
+        });
+
+        // إنشاء جسيمات متحركة
+        const particlesContainer = document.getElementById('particles');
+        const particleCount = 30;
+        
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            
+            // تحديد مواقع عشوائية
+            const posX = Math.random() * 100;
+            const posY = Math.random() * 100;
+            const size = Math.random() * 3 + 1;
+            const opacity = Math.random() * 0.5 + 0.1;
+            const duration = Math.random() * 20 + 10;
+            const delay = Math.random() * -20;
+            
+            particle.style.left = `${posX}%`;
+            particle.style.top = `${posY}%`;
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.opacity = opacity;
+            particle.style.animationDuration = `${duration}s`;
+            particle.style.animationDelay = `${delay}s`;
+            
+            particlesContainer.appendChild(particle);
+        }
+
+        // تأثيرات عند التمرير
+        const animateOnScroll = () => {
+            const elements = document.querySelectorAll('.feature-card, .destination-card');
+            
+            elements.forEach(element => {
+                const elementPosition = element.getBoundingClientRect().top;
+                const screenPosition = window.innerHeight / 1.3;
+                
+                if (elementPosition < screenPosition) {
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                }
+            });
+        };
+
+        // تهيئة العناصر قبل الظهور
+        document.querySelectorAll('.feature-card, .destination-card').forEach(element => {
+            element.style.opacity = '0';
+            element.style.transform = 'translateY(20px)';
+            element.style.transition = 'opacity 0.5s, transform 0.5s';
+        });
+
+        window.addEventListener('scroll', animateOnScroll);
+        window.addEventListener('load', animateOnScroll);
+    </script>
+</body>
+</html>

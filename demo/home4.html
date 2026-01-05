@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سفاري | اكتشف العالم</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #171D30;
+            --secondary-color: #4CAF50;
+            --accent-color: #2196F3;
+            --text-light: rgba(255, 255, 255, 0.9);
+            --text-muted: rgba(255, 255, 255, 0.6);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', 'Segoe UI', sans-serif;
+        }
+        
+        body {
+            background-color: var(--primary-color);
+            color: white;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* تأثيرات الضوء الديناميكية */
+        .light-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .light-particle {
+            position: absolute;
+            background: radial-gradient(circle, rgba(33, 150, 243, 0.6) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(10px);
+            transform: translate(-50%, -50%);
+            transition: transform 0.2s ease-out;
+        }
+        
+        /* تأثير الشبكة التفاعلية */
+        .grid-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        .container {
+            position: relative;
+            z-index: 2;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* شريط التنقل */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--secondary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logo i {
+            font-size: 1.5rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: color 0.3s;
+            position: relative;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: var(--text-light);
+        }
+        
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            right: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--secondary-color), var(--accent-color));
+            border-radius: 2px;
+        }
+        
+        /* محتوى رئيسي */
+        .hero {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 2rem 0;
+            position: relative;
+        }
+        
+        .hero-content {
+            max-width: 600px;
+            margin-right: auto;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            background: linear-gradient(90deg, var(--text-light), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 2.5rem;
+            line-height: 1.6;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+        
+        .btn {
+            padding: 0.8rem 1.8rem;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, var(--secondary-color), var(--accent-color));
+            color: white;
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            color: var(--text-light);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* بطاقات الأماكن */
+        .places-cards {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            display: flex;
+            gap: 1.5rem;
+            padding: 1.5rem 2rem;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        
+        .places-cards::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .place-card {
+            min-width: 250px;
+            height: 300px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .place-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .place-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(transparent 60%, rgba(0, 0, 0, 0.7));
+            z-index: 1;
+        }
+        
+        .place-card-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .place-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .place-location {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        /* شريط التذييل */
+        footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 0;
+            margin-top: auto;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .social-icon:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        
+        /* تأثيرات الحركة */
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+        
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <!-- تأثيرات الضوء -->
+    <div class="light-particles" id="lightParticles"></div>
+    
+    <!-- تأثير الشبكة -->
+    <div class="grid-effect"></div>
+    
+    <div class="container">
+        <nav>
+            <div class="logo">
+                <i class="fas fa-compass"></i>
+                <span>سفاري</span>
+            </div>
+            
+            <div class="nav-links">
+                <a href="#" class="nav-link active">الرئيسية</a>
+                <a href="#" class="nav-link">الاستكشاف</a>
+                <a href="#" class="nav-link">الرحلات</a>
+                <a href="#" class="nav-link">المفضلة</a>
+                <a href="#" class="nav-link">الحساب</a>
+            </div>
+        </nav>
+        
+        <section class="hero">
+            <div class="hero-content">
+                <h1>اكتشف عجائب العالم مع سفاري</h1>
+                <p class="subtitle">
+                    تطبيق سفاري يوفر لك تجربة فريدة لاكتشاف الأماكن السياحية حول العالم، 
+                    مع تفاصيل دقيقة وتقييمات حقيقية لمساعدتك في التخطيط لرحلتك المثالية.
+                </p>
+                
+                <div class="cta-buttons">
+                    <button class="btn btn-primary">ابدأ الرحلة</button>
+                    <button class="btn btn-secondary">المزيد عنا</button>
+                </div>
+            </div>
+            
+            <div class="places-cards">
+                <div class="place-card" style="background-image: url('https://images.unsplash.com/photo-1506929562872-bb421503ef21?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'); background-size: cover;">
+                    <div class="place-card-content">
+                        <h3 class="place-name">جبل إيفرست</h3>
+                        <p class="place-location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            نيبال
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="place-card" style="background-image: url('https://images.unsplash.com/photo-1508672019048-805c876b67e2?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'); background-size: cover;">
+                    <div class="place-card-content">
+                        <h3 class="place-name">غابات الأمازون</h3>
+                        <p class="place-location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            البرازيل
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="place-card" style="background-image: url('https://images.unsplash.com/photo-1505142468610-359e7d316be0?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'); background-size: cover;">
+                    <div class="place-card-content">
+                        <h3 class="place-name">شلالات نياجرا</h3>
+                        <p class="place-location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            كندا
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="place-card" style="background-image: url('https://images.unsplash.com/photo-1518391846015-55a9cc003b25?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'); background-size: cover;">
+                    <div class="place-card-content">
+                        <h3 class="place-name">صحراء الربع الخالي</h3>
+                        <p class="place-location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            السعودية
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <footer>
+            <div class="social-icons">
+                <div class="social-icon">
+                    <i class="fab fa-twitter"></i>
+                </div>
+                <div class="social-icon">
+                    <i class="fab fa-instagram"></i>
+                </div>
+                <div class="social-icon">
+                    <i class="fab fa-facebook-f"></i>
+                </div>
+                <div class="social-icon">
+                    <i class="fab fa-youtube"></i>
+                </div>
+            </div>
+            
+            <p class="copyright">© 2023 سفاري. جميع الحقوق محفوظة</p>
+        </footer>
+    </div>
+    
+    <script>
+        // تأثير الضوء الذي يتبع الماوس مع جزيئات إضافية
+        document.addEventListener('DOMContentLoaded', () => {
+            const lightParticles = document.getElementById('lightParticles');
+            
+            // إنشاء جزيئات ضوئية
+            for (let i = 0; i < 5; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'light-particle';
+                particle.style.width = `${Math.random() * 300 + 200}px`;
+                particle.style.height = particle.style.width;
+                particle.style.opacity = Math.random() * 0.3 + 0.1;
+                lightParticles.appendChild(particle);
+            }
+            
+            const particles = document.querySelectorAll('.light-particle');
+            
+            // تأثير تتبع الماوس مع تأخير لكل جزيء
+            document.addEventListener('mousemove', (e) => {
+                particles.forEach((particle, index) => {
+                    const delay = index * 100;
+                    setTimeout(() => {
+                        particle.style.left = `${e.clientX + (Math.random() * 100 - 50)}px`;
+                        particle.style.top = `${e.clientY + (Math.random() * 100 - 50)}px`;
+                    }, delay);
+                });
+            });
+            
+            // تأثير عشوائي لحركة الجزيئات عند عدم تحريك الماوس
+            setInterval(() => {
+                if (!mouseMovedRecently) {
+                    particles.forEach(particle => {
+                        particle.style.left = `${Math.random() * window.innerWidth}px`;
+                        particle.style.top = `${Math.random() * window.innerHeight}px`;
+                    });
+                }
+            }, 3000);
+            
+            let mouseMovedRecently = false;
+            let mouseMoveTimeout;
+            
+            document.addEventListener('mousemove', () => {
+                mouseMovedRecently = true;
+                clearTimeout(mouseMoveTimeout);
+                mouseMoveTimeout = setTimeout(() => {
+                    mouseMovedRecently = false;
+                }, 1000);
+            });
+            
+            // تأثير الطفو للبطاقات
+            const cards = document.querySelectorAll('.place-card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.2}s`;
+            });
+        });
+    </script>
+</body>
+</html>

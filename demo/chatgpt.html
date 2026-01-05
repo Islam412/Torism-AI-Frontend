@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>شات AI تفاعلي</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700&display=swap');
+    
+    :root {
+      --primary: #4CAF50;
+      --primary-dark: #2E8B57;
+      --accent: #FFD700;
+      --bg: #171D30; /* اللون الجديد للخلفية */
+      --bg-light: #232b45;
+      --text: #ffffff;
+    }
+    
+    * {
+      font-family: 'Tajawal', sans-serif;
+    }
+    
+    body {
+      background-color: var(--bg);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+    
+    /* Cosmic Background */
+    .cosmic-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -3;
+      background: 
+        radial-gradient(circle at 20% 30%, rgba(76, 175, 80, 0.15) 0%, transparent 25%),
+        radial-gradient(circle at 80% 70%, rgba(255, 215, 0, 0.1) 0%, transparent 25%),
+        linear-gradient(135deg, var(--bg) 0%, #0f1424 100%);
+    }
+    
+    /* Animated Stars */
+    .stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      overflow: hidden;
+    }
+    
+    .star {
+      position: absolute;
+      background-color: white;
+      border-radius: 50%;
+      animation: twinkle var(--duration) infinite ease-in-out;
+      opacity: var(--opacity);
+    }
+    
+    @keyframes twinkle {
+      0%, 100% { opacity: var(--opacity); }
+      50% { opacity: calc(var(--opacity) * 0.3); }
+    }
+    
+    /* Light Particles */
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: -1;
+      animation: float 15s linear infinite;
+    }
+    
+    @keyframes float {
+      0% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-100px) rotate(180deg); }
+      100% { transform: translateY(0px) rotate(360deg); }
+    }
+    
+    /* Mouse Light Effect */
+    .cursor-light {
+      position: fixed;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      filter: blur(30px);
+    }
+    
+    body.light-effect .cursor-light {
+      opacity: 0.5;
+    }
+    
+    /* Custom Cursor */
+    .cursor {
+      position: fixed;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background-color: rgba(255, 230, 0, 0.7);
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      z-index: 9999;
+      mix-blend-mode: screen;
+      transition: transform 0.2s ease, background-color 0.2s ease;
+    }
+    
+    /* Chat Container */
+    .chat-container {
+      max-width: 800px;
+      margin: 0 auto;
+      height: 90vh;
+      display: flex;
+      flex-direction: column;
+      background-color: rgba(35, 43, 69, 0.8);
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+    
+    .chat-container:hover {
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
+    }
+    
+    /* Chat Messages */
+    .chat-messages {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--primary) var(--bg-light);
+    }
+    
+    .chat-messages::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    .chat-messages::-webkit-scrollbar-track {
+      background: var(--bg-light);
+    }
+    
+    .chat-messages::-webkit-scrollbar-thumb {
+      background-color: var(--primary);
+      border-radius: 20px;
+    }
+    
+    /* Message Styles */
+    .message {
+      margin-bottom: 15px;
+      max-width: 80%;
+      padding: 12px 16px;
+      border-radius: 18px;
+      position: relative;
+      animation: fadeIn 0.3s ease;
+      transition: all 0.3s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .bot-message {
+      background-color: var(--bg-light);
+      border-bottom-right-radius: 5px;
+      margin-right: auto;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .user-message {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      border-bottom-left-radius: 5px;
+      margin-left: auto;
+      color: white;
+    }
+    
+    /* Input Area */
+    .input-area {
+      display: flex;
+      padding: 15px;
+      background-color: var(--bg-light);
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .input-field {
+      flex: 1;
+      padding: 12px 15px;
+      border-radius: 25px;
+      border: none;
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+      font-size: 16px;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+    
+    .input-field:focus {
+      background-color: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 0 0 2px var(--primary);
+    }
+    
+    /* Buttons */
+    .btn {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin-right: 10px;
+      transition: all 0.3s ease;
+    }
+    
+    .btn:hover {
+      background-color: var(--primary-dark);
+      transform: scale(1.05);
+    }
+    
+    .btn-secondary {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .btn-secondary:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    /* Camera Preview */
+    .camera-preview {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      display: none;
+    }
+    
+    .camera-video {
+      width: 80%;
+      max-width: 500px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .camera-controls {
+      display: flex;
+      gap: 15px;
+    }
+    
+    /* Image Preview */
+    .image-preview {
+      max-width: 200px;
+      max-height: 200px;
+      border-radius: 10px;
+      margin-top: 10px;
+      display: none;
+    }
+    
+    /* Typing Indicator */
+    .typing-indicator {
+      display: inline-flex;
+      padding: 10px 15px;
+      background-color: var(--bg-light);
+      border-radius: 18px;
+      border-bottom-right-radius: 5px;
+    }
+    
+    .typing-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #aaa;
+      border-radius: 50%;
+      margin: 0 3px;
+      animation: typingAnimation 1.4s infinite ease-in-out;
+    }
+    
+    .typing-dot:nth-child(1) {
+      animation-delay: 0s;
+    }
+    
+    .typing-dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+    
+    .typing-dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+    
+    @keyframes typingAnimation {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-5px); }
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .chat-container {
+        height: 100vh;
+        border-radius: 0;
+      }
+      
+      .message {
+        max-width: 90%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Cosmic Background Elements -->
+  <div class="cosmic-bg"></div>
+  <div class="stars" id="stars"></div>
+  <div class="cursor-light" id="cursorLight"></div>
+  <div class="cursor"></div>
+  
+  <!-- Chat Container -->
+  <div class="chat-container" id="chatContainer">
+    <!-- Chat Messages -->
+    <div class="chat-messages" id="chatMessages">
+      <!-- Initial welcome message -->
+      <div class="message bot-message">
+        <div class="flex items-center space-x-2 space-x-reverse mb-2">
+          <img src="https://storage.googleapis.com/a1aa/image/MhM1D6E-ZyrjmaYffgHVYtXGSyr462YhZv4IriFgIQQ.jpg" alt="AI Avatar" class="w-8 h-8 rounded-full">
+          <span class="font-bold">مساعد الذكاء الاصطناعي</span>
+        </div>
+        <p>مرحباً! أنا مساعدك الذكي. كيف يمكنني مساعدتك اليوم؟</p>
+        <p class="mt-2 text-sm text-gray-400">يمكنك التحدث معي بالصوت، إرسال الصور أو حتى استخدام الكاميرا!</p>
+      </div>
+    </div>
+    
+    <!-- Input Area -->
+    <div class="input-area">
+      <button class="btn btn-secondary" id="cameraBtn" title="فتح الكاميرا">
+        <i class="fas fa-camera"></i>
+      </button>
+      
+      <button class="btn btn-secondary" id="uploadBtn" title="رفع صورة">
+        <i class="fas fa-image"></i>
+        <input type="file" id="fileInput" accept="image/*" style="display: none;">
+      </button>
+      
+      <button class="btn btn-secondary" id="voiceBtn" title="التحدث بالصوت">
+        <i class="fas fa-microphone"></i>
+      </button>
+      
+      <input type="text" class="input-field" id="messageInput" placeholder="اكتب رسالتك هنا..." dir="auto">
+      
+      <button class="btn" id="sendBtn">
+        <i class="fas fa-paper-plane"></i>
+      </button>
+    </div>
+  </div>
+  
+  <!-- Camera Preview Modal -->
+  <div class="camera-preview" id="cameraModal">
+    <video class="camera-video" id="cameraVideo" autoplay playsinline></video>
+    <div class="camera-controls">
+      <button class="btn" id="captureBtn">
+        <i class="fas fa-camera"></i>
+      </button>
+      <button class="btn btn-secondary" id="closeCameraBtn">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  </div>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // DOM Elements
+      const chatMessages = document.getElementById('chatMessages');
+      const messageInput = document.getElementById('messageInput');
+      const sendBtn = document.getElementById('sendBtn');
+      const cameraBtn = document.getElementById('cameraBtn');
+      const uploadBtn = document.getElementById('uploadBtn');
+      const fileInput = document.getElementById('fileInput');
+      const voiceBtn = document.getElementById('voiceBtn');
+      const cameraModal = document.getElementById('cameraModal');
+      const cameraVideo = document.getElementById('cameraVideo');
+      const captureBtn = document.getElementById('captureBtn');
+      const closeCameraBtn = document.getElementById('closeCameraBtn');
+      const cursorLight = document.getElementById('cursorLight');
+      const cursor = document.querySelector('.cursor');
+      const chatContainer = document.getElementById('chatContainer');
+      
+      // Create stars
+      const starsContainer = document.getElementById('stars');
+      for (let i = 0; i < 100; i++) {
+        const star = document.createElement('div');
+        star.classList.add('star');
+        star.style.width = `${Math.random() * 3 + 1}px`;
+        star.style.height = star.style.width;
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.top = `${Math.random() * 100}%`;
+        star.style.setProperty('--duration', `${Math.random() * 5 + 3}s`);
+        star.style.setProperty('--opacity', Math.random() * 0.5 + 0.1);
+        starsContainer.appendChild(star);
+      }
+      
+      // Create floating particles
+      for (let i = 0; i < 15; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+        particle.style.width = `${Math.random() * 8 + 2}px`;
+        particle.style.height = particle.style.width;
+        particle.style.left = `${Math.random() * 100}%`;
+        particle.style.top = `${Math.random() * 100}%`;
+        particle.style.opacity = Math.random() * 0.3 + 0.1;
+        particle.style.animation = `float ${Math.random() * 10 + 10}s linear infinite`;
+        particle.style.animationDelay = `${Math.random() * 5}s`;
+        particle.style.backgroundColor = `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.random() * 0.3 + 0.1})`;
+        document.body.appendChild(particle);
+      }
+      
+      // Mouse move effects
+      document.addEventListener('mousemove', (e) => {
+        // Move custom cursor
+        cursor.style.left = e.clientX + 'px';
+        cursor.style.top = e.clientY + 'px';
+        
+        // Move light effect
+        cursorLight.style.left = e.clientX + 'px';
+        cursorLight.style.top = e.clientY + 'px';
+        document.body.classList.add('light-effect');
+        
+        // Parallax effect for chat container
+        const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
+        const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
+        chatContainer.style.transform = `translate(${xAxis}px, ${yAxis}px)`;
+      });
+      
+      document.addEventListener('mouseout', () => {
+        document.body.classList.remove('light-effect');
+        chatContainer.style.transform = 'translate(0)';
+      });
+      
+      // Send message function
+      function sendMessage() {
+        const message = messageInput.value.trim();
+        if (message === '') return;
+        
+        // Add user message to chat
+        addMessage(message, 'user');
+        
+        // Clear input
+        messageInput.value = '';
+        
+        // Show typing indicator
+        showTypingIndicator();
+        
+        // Simulate AI response after a delay
+        setTimeout(() => {
+          removeTypingIndicator();
+          generateAIResponse(message);
+        }, 1500);
+      }
+      
+      // Add message to chat
+      function addMessage(content, sender, isImage = false) {
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message');
+        
+        if (sender === 'user') {
+          messageDiv.classList.add('user-message');
+          if (isImage) {
+            messageDiv.innerHTML = `
+              <div class="text-right mb-1 text-xs text-white/80">أنت</div>
+              <img src="${content}" class="max-w-full rounded-lg">
+            `;
+          } else {
+            messageDiv.innerHTML = `
+              <div class="text-right mb-1 text-xs text-white/80">أنت</div>
+              <p>${content}</p>
+            `;
+          }
+        } else {
+          messageDiv.classList.add('bot-message');
+          if (isImage) {
+            messageDiv.innerHTML = `
+              <div class="flex items-center space-x-2 space-x-reverse mb-2">
+                <img src="https://storage.googleapis.com/a1aa/image/MhM1D6E-ZyrjmaYffgHVYtXGSyr462YhZv4IriFgIQQ.jpg" alt="AI Avatar" class="w-8 h-8 rounded-full">
+                <span class="font-bold">مساعد الذكاء الاصطناعي</span>
+              </div>
+              <img src="${content}" class="max-w-full rounded-lg">
+            `;
+          } else {
+            messageDiv.innerHTML = `
+              <div class="flex items-center space-x-2 space-x-reverse mb-2">
+                <img src="https://storage.googleapis.com/a1aa/image/MhM1D6E-ZyrjmaYffgHVYtXGSyr462YhZv4IriFgIQQ.jpg" alt="AI Avatar" class="w-8 h-8 rounded-full">
+                <span class="font-bold">مساعد الذكاء الاصطناعي</span>
+              </div>
+              <p>${content}</p>
+            `;
+          }
+        }
+        
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+      
+      // Show typing indicator
+      function showTypingIndicator() {
+        const typingDiv = document.createElement('div');
+        typingDiv.classList.add('message', 'bot-message', 'typing-indicator');
+        typingDiv.id = 'typingIndicator';
+        typingDiv.innerHTML = `
+          <div class="flex items-center space-x-2 space-x-reverse">
+            <img src="https://storage.googleapis.com/a1aa/image/MhM1D6E-ZyrjmaYffgHVYtXGSyr462YhZv4IriFgIQQ.jpg" alt="AI Avatar" class="w-6 h-6 rounded-full">
+            <div class="flex">
+              <div class="typing-dot"></div>
+              <div class="typing-dot"></div>
+              <div class="typing-dot"></div>
+            </div>
+          </div>
+        `;
+        
+        chatMessages.appendChild(typingDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+      
+      // Remove typing indicator
+      function removeTypingIndicator() {
+        const typingIndicator = document.getElementById('typingIndicator');
+        if (typingIndicator) {
+          typingIndicator.remove();
+        }
+      }
+      
+      // Generate AI response (simulated)
+      function generateAIResponse(userMessage) {
+        let response = "";
+        
+        // Simple response logic (in a real app, you'd call an AI API)
+        if (userMessage.includes('مرحبا') || userMessage.includes('اهلا')) {
+          response = "مرحباً بك! كيف يمكنني مساعدتك اليوم؟";
+        } else if (userMessage.includes('كيف حالك')) {
+          response = "أنا بخير، شكراً لسؤالك! كيف يمكنني مساعدتك؟";
+        } else if (userMessage.includes('شكرا')) {
+          response = "العفو! دائماً سعيد بمساعدتك. هل هناك شيء آخر تحتاج إليه؟";
+        } else if (userMessage.includes('صورة')) {
+          response = "لقد تلقيت صورتك! هذه صورة جميلة. هل تريد أن أعطيك معلومات عنها؟";
+          // In a real app, you would process the image with AI
+        } else {
+          response = "هذا سؤال مثير للاهتمام! للأسف أنا نموذج توضيحي، لكن في التطبيق الحقيقي سأجيب على أسئلتك بذكاء.";
+        }
+        
+        addMessage(response, 'bot');
+      }
+      
+      // Event Listeners
+      sendBtn.addEventListener('click', sendMessage);
+      
+      messageInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          sendMessage();
+        }
+      });
+      
+      // Camera functionality
+      cameraBtn.addEventListener('click', async function() {
+        cameraModal.style.display = 'flex';
+        
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+          cameraVideo.srcObject = stream;
+        } catch (err) {
+          alert('تعذر الوصول إلى الكاميرا: ' + err.message);
+          cameraModal.style.display = 'none';
+        }
+      });
+      
+      // Capture photo from camera
+      captureBtn.addEventListener('click', function() {
+        const canvas = document.createElement('canvas');
+        canvas.width = cameraVideo.videoWidth;
+        canvas.height = cameraVideo.videoHeight;
+        canvas.getContext('2d').drawImage(cameraVideo, 0, 0);
+        
+        const imageData = canvas.toDataURL('image/png');
+        
+        // Close camera
+        cameraVideo.srcObject.getTracks().forEach(track => track.stop());
+        cameraModal.style.display = 'none';
+        
+        // Send image to chat
+        addMessage(imageData, 'user', true);
+        
+        // Show typing indicator for AI response
+        showTypingIndicator();
+        
+        setTimeout(() => {
+          removeTypingIndicator();
+          addMessage("شكراً لإرسالك هذه الصورة! في التطبيق الحقيقي، سأقوم بتحليل الصورة وإعطائك معلومات عنها.", 'bot');
+        }, 1500);
+      });
+      
+      // Close camera
+      closeCameraBtn.addEventListener('click', function() {
+        if (cameraVideo.srcObject) {
+          cameraVideo.srcObject.getTracks().forEach(track => track.stop());
+        }
+        cameraModal.style.display = 'none';
+      });
+      
+      // Upload image functionality
+      uploadBtn.addEventListener('click', function() {
+        fileInput.click();
+      });
+      
+      fileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(event) {
+            addMessage(event.target.result, 'user', true);
+            
+            // Show typing indicator for AI response
+            showTypingIndicator();
+            
+            setTimeout(() => {
+              removeTypingIndicator();
+              addMessage("شكراً لإرسالك هذه الصورة! في التطبيق الحقيقي، سأقوم بتحليل الصورة وإعطائك معلومات عنها.", 'bot');
+            }, 1500);
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+      
+      // Voice recognition functionality
+      voiceBtn.addEventListener('click', function() {
+        if ('webkitSpeechRecognition' in window) {
+          const recognition = new webkitSpeechRecognition();
+          recognition.lang = 'ar-SA';
+          recognition.interimResults = false;
+          
+          recognition.onstart = function() {
+            voiceBtn.innerHTML = '<i class="fas fa-microphone-slash"></i>';
+            voiceBtn.style.backgroundColor = 'red';
+            addMessage("أنا أستمع لك الآن...", 'bot');
+          };
+          
+          recognition.onresult = function(event) {
+            const transcript = event.results[0][0].transcript;
+            messageInput.value = transcript;
+            sendMessage();
+          };
+          
+          recognition.onerror = function(event) {
+            addMessage("حدث خطأ في التعرف على الصوت: " + event.error, 'bot');
+          };
+          
+          recognition.onend = function() {
+            voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+            voiceBtn.style.backgroundColor = '';
+          };
+          
+          recognition.start();
+        } else {
+          addMessage("عذراً، التعرف على الصوت غير مدعوم في متصفحك.", 'bot');
+        }
+      });
+      
+      // Add hover effects for interactive elements
+      const interactiveElements = document.querySelectorAll('.btn, .input-field, .message');
+      interactiveElements.forEach(el => {
+        el.addEventListener('mouseenter', () => {
+          cursor.style.transform = 'translate(-50%, -50%) scale(1.5)';
+          cursor.style.backgroundColor = 'rgba(255, 200, 0, 0.8)';
+        });
+        
+        el.addEventListener('mouseleave', () => {
+          cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+          cursor.style.backgroundColor = 'rgba(255, 230, 0, 0.7)';
+        });
+      });
+    });
+  </script>
+</body>
+</html>
